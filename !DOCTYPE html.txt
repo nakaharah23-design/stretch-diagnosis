@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>肩こりセルフ診断</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; line-height:1.6; padding:20px; }
+    h1 { color:#2c3e50; }
+    button { padding:10px 20px; margin:10px 0; font-size:16px; }
+    .question { margin:20px 0; }
+    #result { margin-top:30px; padding:20px; border:1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <h1>肩こりセルフ診断</h1>
+  <p>以下の質問に答えてください。</p>
+
+  <div id="quiz">
+    <div class="question">
+      <p>① 後頭部を壁につけて立てますか？</p>
+      <button onclick="addScore('forwardHead')">つかない/喉が詰まる</button>
+      <button onclick="next()">多少浮く</button>
+      <button onclick="next()">余裕でつく</button>
+    </div>
+
+    <div class="question" style="display:none;">
+      <p>② 顎を軽く引いたまま何秒キープできますか？</p>
+      <button onclick="addScore('deepFlexor')">10秒未満</button>
+      <button onclick="next()">10〜20秒</button>
+      <button onclick="next()">20秒以上</button>
+    </div>
+
+    <div class="question" style="display:none;">
+      <p>③ 胸を張ろうとしても背中が硬いと感じますか？</p>
+      <button onclick="addScore('thoracicStiff')">はい、硬い</button>
+      <button onclick="next()">少し硬い</button>
+      <button onclick="next()">問題なし</button>
+    </div>
+
+    <div class="question" style="display:none;">
+      <p>④ 肩の位置は？</p>
+      <button onclick="addScore('roundedShoulder')">明らかな巻き肩</button>
+      <button onclick="next()">やや巻き肩</button>
+      <button onclick="next()">中立</button>
+    </div>
+
+    <div class="question" style="display:none;">
+      <p>⑤ 肩や首の筋肉を触ると常に硬いですか？</p>
+      <button onclick="addScore('trapeziusTight')">強い</button>
+      <button onclick="next()">中程度</button>
+      <button onclick="next()">軽い</button>
+    </div>
+  </div>
+
+  <div id="result" style="display:none;"></div>
+
+<script>
+let current = 0;
+let scores = {
+  forwardHead:0, deepFlexor:0, thoracicStiff:0,
+  roundedShoulder:0, trapeziusTight:0
+};
+
+function addScore(type){
+  scores[type]++;
+  next();
+}
+
+function next(){
+  let questions = document.querySelectorAll('.question');
+  if(current < questions.length) questions[current].style.display="none";
+  current++;
+  if(current < questions.length){
+    questions[current].style.display="block";
+  } else {
+    showResult();
+  }
+}
+
+function showResult(){
+  let resultDiv = document.getElementById('result');
+  resultDiv.style.display="block";
+
+  // 判定（めちゃ簡単な条件）
+  if(scores.forwardHead>=1 && scores.thoracicStiff>=1 && scores.roundedShoulder>=1){
+    resultDiv.innerHTML = `
+      <h2>結果：上位交差症候群タイプ</h2>
+      <p>頭が前に出やすく、胸の筋肉や肩のバランスが崩れています。</p>
+      <h3>おすすめストレッチ</h3>
+      <ul>
+        <li>胸のストレッチ（ドア枠）</li>
+        <li>僧帽筋上部の軽い伸ばし</li>
+        <li>タオルを背中に敷いて胸を開く</li>
+      </ul>
+      <h3>おすすめエクササイズ</h3>
+      <ul>
+        <li>顎引き（深層屈筋トレーニング）</li>
+        <li>壁エンジェル</li>
+        <li>デッドバグ呼吸</li>
+      </ul>
+      <p><strong>注意：</strong> しびれ・頭痛が強まる場合は中止し、専門家へご相談ください。</p>
+      <p><a href="https://your-reserve-link-here.com" target="_blank">→ 来院予約はこちら</a></p>
+    `;
+  } else {
+    resultDiv.innerHTML = `
+      <h2>結果：一般的な肩こりタイプ</h2>
+      <p>首や肩の筋肉が疲れて硬くなっています。</p>
+      <h3>おすすめストレッチ</h3>
+      <ul>
+        <li>首の横伸ばしストレッチ</li>
+        <li>肩甲骨まわし</li>
+        <li>軽い肩の上下運動</li>
+      </ul>
+      <p><a href="https://your-reserve-link-here.com" target="_blank">→ 来院予約はこちら</a></p>
+    `;
+  }
+}
+</script>
+</body>
+</html>
